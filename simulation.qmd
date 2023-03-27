@@ -34,6 +34,26 @@ combinations= list(itertools.product(x1, x2, x3))
 ```
 
 ```{python}
+#expected value must be $30
+
+lower_wins = [1, 2, 3, 4]
+upper_wins = [5, 6]
+
+lower_payout = 20
+upper_payout = 50
+
+def bonus_roll():
+  roll = random.randint(1,6)
+  if (roll in lower_wins):
+    return lower_payout
+  else:
+    return upper_payout
+
+```
+
+```{python}
+#| echo: false
+
 
 #winning combos & payouts
 wins = {
@@ -56,10 +76,13 @@ manual_2_wins = list(filter(lambda combo : leading_double(2, combo), combination
 manual_1_wins = list(filter(lambda combo : leading_double(1, combo), combinations))
 
 #add payout combos to win dictionary
+[wins.update({win: bonus_roll}) for win in centre_11_win]
 [wins.update({win: 15}) for win in all_equal_win] #add payouts for x = y = z case
 [wins.update({win: 5}) for win in manual_5_wins]
 [wins.update({win: 1}) for win in manual_2_wins]
 [wins.update({win: 1}) for win in manual_1_wins]
+
+
 ```
 
 ```{python}
@@ -72,9 +95,9 @@ upper_wins = [5, 6]
 lower_payout = 20
 upper_payout = 50
 
-def bonus_roll()
+def bonus_roll():
   roll = random.randint(1,6)
-  if roll in lower_wins:
+  if (roll in lower_wins):
     return lower_payout
   else:
     return upper_payout
