@@ -40,7 +40,7 @@ wins = {
   # (5, 5) : 5,
   # (1, 1) : 1,
   # (2, 2) : 1
-  # (x odd, 11, y) : bonus_roll(x, y) with expected payout 30,
+  # (x odd, 11, y) : bonus_roll() with expected payout 30,
   # (x, y, z) : 15 when x = y = z
 }
 
@@ -48,7 +48,7 @@ wins = {
 centre_11_win = list(filter((lambda combo : combo[1] == 11 and combo[0] % 2 == 1), combinations))
 all_equal_win = list(filter(lambda combo: combo[0] == combo[1] == combo[2], combinations))
 
-def leading_double(num, combo) :
+def leading_double(num, combo):
   return num == combo[0] == combo[1] != combo[2] #exclude triples
   
 manual_5_wins = list(filter(lambda combo : leading_double(5, combo), combinations))
@@ -57,10 +57,27 @@ manual_1_wins = list(filter(lambda combo : leading_double(1, combo), combination
 
 #add payout combos to win dictionary
 [wins.update({win: 15}) for win in all_equal_win] #add payouts for x = y = z case
+[wins.update({win: 5}) for win in manual_5_wins]
+[wins.update({win: 1}) for win in manual_2_wins]
+[wins.update({win: 1}) for win in manual_1_wins]
+```
 
+```{python}
 
+#expected value must be $30
 
-# expected_value = total_payout / num_combinations #payout percentage
+lower_wins = [1, 2, 3, 4]
+upper_wins = [5, 6]
+
+lower_payout = 20
+upper_payout = 50
+
+def bonus_roll()
+  roll = random.randint(1,6)
+  if roll in lower_wins:
+    return lower_payout
+  else:
+    return upper_payout
 ```
 
 ```{python}
@@ -72,4 +89,8 @@ assert len(all_equal_win) == min(N1, N2, N3), "the number of equal rounds is inc
 assert len(manual_5_wins) == 4, "the number of (5, 5, x) tuples is incorrect"
 assert len(manual_2_wins) == 4, "the number of (2, 2, x) tuples is incorrect"
 assert len(manual_1_wins) == 4, "the number of (1, 1, x) tuples is incorrect"
+
+assert lower_payout * (len(lower_wins) / len(lower_wins + upper_wins)) + upper_payout * len(upper_wins) / len(lower_wins + upper_wins) == 30, "bonus roll expected payout isn't $30"
+
+# expected_value = total_payout / num_combinations #payout percentage
 ```
