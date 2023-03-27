@@ -1,0 +1,37 @@
+---
+title: "Summoned Plunderer"
+format: html
+editor: visual
+---
+
+```{r}
+{
+  library(tidyverse)  #useful dataframe functions for R
+  library(reticulate) #allows Python and R interoperability
+}
+```
+
+```{python}
+#elements that reels 1 to 3 can assume
+N1 = 10
+N2 = 11
+N3 = 5
+
+#reels 1 to 3
+x1 = list(range(1,N1 + 1))
+x2 = list(range(1,N2 + 1))
+x3 = list(range(1,N3 + 1))
+
+#winning combos & payouts
+wins = {
+  (5, 5) : 1,
+  (1, 1) : 1
+  # (x, 11, y) : bonus_roll(x, y),
+  
+}
+
+```
+
+```{r}
+x5 <- 2
+```
