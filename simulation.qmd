@@ -70,5 +70,6 @@ assert num_combinations == len(combinations), "the number of combinations is inc
 assert len(centre_11_win) == N1 / 2 * N3, "the number of bonus rounds is incorrect"
 assert len(all_equal_win) == min(N1, N2, N3), "the number of equal rounds is incorrect"
 assert len(manual_5_wins) == 4, "the number of (5, 5, x) tuples is incorrect"
-
+assert len(manual_2_wins) == 4, "the number of (2, 2, x) tuples is incorrect"
+assert len(manual_1_wins) == 4, "the number of (1, 1, x) tuples is incorrect"
 ```
