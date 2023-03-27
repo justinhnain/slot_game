@@ -48,7 +48,16 @@ wins = {
 centre_11_win = list(filter((lambda combo : combo[1] == 11 and combo[0] % 2 == 1), combinations))
 all_equal_win = list(filter(lambda combo: combo[0] == combo[1] == combo[2], combinations))
 
+def leading_double(num, combo) :
+  return num == combo[0] == combo[1] != combo[2] #exclude triples
+  
+manual_5_wins = list(filter(lambda combo : leading_double(5, combo), combinations))
+manual_2_wins = list(filter(lambda combo : leading_double(2, combo), combinations))
+manual_1_wins = list(filter(lambda combo : leading_double(1, combo), combinations))
+
+#add payout combos to win dictionary
 [wins.update({win: 15}) for win in all_equal_win] #add payouts for x = y = z case
+
 
 
 # expected_value = total_payout / num_combinations #payout percentage
@@ -60,5 +69,6 @@ all_equal_win = list(filter(lambda combo: combo[0] == combo[1] == combo[2], comb
 assert num_combinations == len(combinations), "the number of combinations is incorrect"
 assert len(centre_11_win) == N1 / 2 * N3, "the number of bonus rounds is incorrect"
 assert len(all_equal_win) == min(N1, N2, N3), "the number of equal rounds is incorrect"
+assert len(manual_5_wins) == 4, "the number of (5, 5, x) tuples is incorrect"
 
 ```
