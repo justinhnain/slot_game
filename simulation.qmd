@@ -37,17 +37,21 @@ combinations= list(itertools.product(x1, x2, x3))
 
 #winning combos & payouts
 wins = {
-  (5, 5) : 5,
-  (1, 1) : 1
-  (2, 2) : 1
+  # (5, 5) : 5,
+  # (1, 1) : 1,
+  # (2, 2) : 1
   # (x odd, 11, y) : bonus_roll(x, y) with expected payout 30,
   # (x, y, z) : 15 when x = y = z
 }
 
+
 centre_11_win = list(filter((lambda combo : combo[1] == 11 and combo[0] % 2 == 1), combinations))
 all_equal_win = list(filter(lambda combo: combo[0] == combo[1] == combo[2], combinations))
 
-expected_value = total_payout / num_combinations #payout percentage
+[wins.update({win: 15}) for win in all_equal_win] #add payouts for x = y = z case
+
+
+# expected_value = total_payout / num_combinations #payout percentage
 ```
 
 ```{python}
