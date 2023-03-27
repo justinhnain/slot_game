@@ -7,8 +7,14 @@ editor: visual
 ```{r}
 {
   library(tidyverse)  #useful dataframe functions for R
+  library(infer)      #statistical inference libraries
   library(reticulate) #allows Python and R interoperability
 }
+```
+
+```{python}
+import random
+import itertools
 ```
 
 ```{python}
@@ -22,16 +28,26 @@ x1 = list(range(1,N1 + 1))
 x2 = list(range(1,N2 + 1))
 x3 = list(range(1,N3 + 1))
 
-#winning combos & payouts
-wins = {
-  (5, 5) : 1,
-  (1, 1) : 1
-  # (x, 11, y) : bonus_roll(x, y),
-  
-}
-
+num_combinations = N1*N2*N3
+combinations= list(itertools.product(x1, x2, x3))
 ```
 
-```{r}
-x5 <- 2
+```{python}
+
+#winning combos & payouts
+
+wins = {
+  (5, 5) : 5,
+  (1, 1) : 1
+  (2, 2) : 1
+  # (x, 11, y) : bonus_roll(x, y) with expected payout 30,
+  # (x, y, z) : 15 when x = y = z
+}
+```
+
+```{python}
+
+#tests
+assert num_combinations == len(combinations), "the number of combinations is incorrect"
+
 ```
