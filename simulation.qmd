@@ -39,7 +39,7 @@ We define the set of all outcomes to be a combination of ordered triples to be$\
 
 ### Include a bonus round for when the second reel is "11"
 
-In other words, if $x_2 = 11$ leads to the payout being an outcome of the discrete random variable $X$ with the following payout table:
+In other words, if $x_2 = 11$ leads to the payout being an outcome of the discrete random variable $X$ with the following payout table, for which $E[x] = 20$.:
 
 ```{python}
 #| echo: false
@@ -56,8 +56,6 @@ Markdown(tabulate(
 ))
 
 ```
-
-For which $E[x] = 20$.
 
 ```{python}
 #expected value must be $20
@@ -167,3 +165,17 @@ print(expected_value)
 ```
 
 # Simulate a 3-reel 1-line game
+
+```{r}
+
+game_df <- expand.grid(py$x1, py$x2, py$x3) |> 
+  as_tibble()
+game_df <- game_df |> 
+  rename(
+    reel_1 = Var1, 
+    reel_2 = Var2, 
+    reel_3 = Var3
+  )
+
+game_df
+```

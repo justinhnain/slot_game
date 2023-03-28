@@ -212,71 +212,80 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="define-the-payout-matrix-and-winning-combos" class="level3">
 <h3 class="anchored" data-anchor-id="define-the-payout-matrix-and-winning-combos">Define the payout matrix and winning combos</h3>
-<p>We define the set of winning combinations <span class="math inline">\(W \subset \Omega\)</span> to be equal to <span class="math inline">\(\{(x,y,z) \in \Omega: y = 11 \lor (x,y) \in \{(5,5), (1,1), (2,2)\}\lor x=y=z\}\)</span> and the function <span class="math display">\[f: W \rightarrow \mathbb{R}\]</span></p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode latex code-with-copy"><code class="sourceCode latex"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ss">$$</span><span class="sc">\frac</span><span class="ss">{</span><span class="sc">\partial</span><span class="ss"> f}{</span><span class="sc">\partial</span><span class="ss"> x} = </span><span class="sc">\lim</span><span class="ss">_{h</span><span class="sc">\to</span><span class="ss"> 0} </span><span class="sc">\frac</span><span class="ss">{f(x+h) - f(x)}{h}$$</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We define the set of winning combinations <span class="math inline">\(W \subset \Omega\)</span> to be equal to <span class="math inline">\(\{(x,y,z) \in \Omega: y = 11 \lor (x,y) \in \{(5,5), (1,1), (2,2)\}\lor x=y=z\}\)</span> and the payout function <span class="math display">\[f: W \rightarrow \mathbb{R}\]</span> such that</p>
+<p><span class="math display">\[
+f(w) =
+\begin{cases}
+  1, &amp; \text{if } w = (5,5,x_3) \\
+  1, &amp; \text{if } w = (2,2,x_3) \\
+1, &amp; \text{if } w = (1,1,x_3) \\
+3, &amp; \text{if } w\text{'s coordinates are all equal}  \\
+X, &amp; \text{if } w = (x_1, 11, x_3)
+\end{cases}
+\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#winning combos &amp; payouts</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>wins <span class="op">=</span> {</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (5, 5) : 1,</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (1, 1) : 1,</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (2, 2) : 1</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (x odd, 11, y) : bonus_roll() with expected payout 20,</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (x, y, z) : 3 when x = y = z</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>centre_11_win <span class="op">=</span> <span class="bu">list</span>(<span class="bu">filter</span>((<span class="kw">lambda</span> combo : combo[<span class="dv">1</span>] <span class="op">==</span> <span class="dv">11</span> <span class="kw">and</span> combo[<span class="dv">0</span>] <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">1</span>), combinations))</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>all_equal_win <span class="op">=</span> <span class="bu">list</span>(<span class="bu">filter</span>(<span class="kw">lambda</span> combo: combo[<span class="dv">0</span>] <span class="op">==</span> combo[<span class="dv">1</span>] <span class="op">==</span> combo[<span class="dv">2</span>], combinations))</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> leading_double(num, combo):</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> num <span class="op">==</span> combo[<span class="dv">0</span>] <span class="op">==</span> combo[<span class="dv">1</span>] <span class="op">!=</span> combo[<span class="dv">2</span>] <span class="co">#exclude triples</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>manual_5_wins <span class="op">=</span> <span class="bu">list</span>(<span class="bu">filter</span>(<span class="kw">lambda</span> combo : leading_double(<span class="dv">5</span>, combo), combinations))</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>manual_2_wins <span class="op">=</span> <span class="bu">list</span>(<span class="bu">filter</span>(<span class="kw">lambda</span> combo : leading_double(<span class="dv">2</span>, combo), combinations))</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>manual_1_wins <span class="op">=</span> <span class="bu">list</span>(<span class="bu">filter</span>(<span class="kw">lambda</span> combo : leading_double(<span class="dv">1</span>, combo), combinations))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#winning combos &amp; payouts</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>wins <span class="op">=</span> {</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (5, 5) : 1,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (1, 1) : 1,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (2, 2) : 1</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (x odd, 11, y) : bonus_roll() with expected payout 20,</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (x, y, z) : 3 when x = y = z</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>centre_11_win <span class="op">=</span> <span class="bu">list</span>(<span class="bu">filter</span>((<span class="kw">lambda</span> combo : combo[<span class="dv">1</span>] <span class="op">==</span> <span class="dv">11</span> <span class="kw">and</span> combo[<span class="dv">0</span>] <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">1</span>), combinations))</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>all_equal_win <span class="op">=</span> <span class="bu">list</span>(<span class="bu">filter</span>(<span class="kw">lambda</span> combo: combo[<span class="dv">0</span>] <span class="op">==</span> combo[<span class="dv">1</span>] <span class="op">==</span> combo[<span class="dv">2</span>], combinations))</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> leading_double(num, combo):</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> num <span class="op">==</span> combo[<span class="dv">0</span>] <span class="op">==</span> combo[<span class="dv">1</span>] <span class="op">!=</span> combo[<span class="dv">2</span>] <span class="co">#exclude triples</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>manual_5_wins <span class="op">=</span> <span class="bu">list</span>(<span class="bu">filter</span>(<span class="kw">lambda</span> combo : leading_double(<span class="dv">5</span>, combo), combinations))</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>manual_2_wins <span class="op">=</span> <span class="bu">list</span>(<span class="bu">filter</span>(<span class="kw">lambda</span> combo : leading_double(<span class="dv">2</span>, combo), combinations))</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>manual_1_wins <span class="op">=</span> <span class="bu">list</span>(<span class="bu">filter</span>(<span class="kw">lambda</span> combo : leading_double(<span class="dv">1</span>, combo), combinations))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="build-the-payout-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="build-the-payout-matrix">Build the payout matrix</h3>
-<p>In other words, we populate <span class="math inline">\(W\)</span>.</p>
+<p>In other words, we populate <span class="math inline">\(f\)</span>, where <span class="math inline">\(f\)</span> is defined by “wins”.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#add payout combos to win dictionary</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>[wins.update({win: bonus_roll}) <span class="cf">for</span> win <span class="kw">in</span> centre_11_win]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>[wins.update({win: <span class="dv">3</span>}) <span class="cf">for</span> win <span class="kw">in</span> all_equal_win] <span class="co">#add payouts for x = y = z case</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>[wins.update({win: <span class="dv">1</span>}) <span class="cf">for</span> win <span class="kw">in</span> manual_5_wins]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>[wins.update({win: <span class="dv">1</span>}) <span class="cf">for</span> win <span class="kw">in</span> manual_2_wins]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>[wins.update({win: <span class="dv">1</span>}) <span class="cf">for</span> win <span class="kw">in</span> manual_1_wins]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#add payout combos to win dictionary</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>[wins.update({win: bonus_roll}) <span class="cf">for</span> win <span class="kw">in</span> centre_11_win]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>[wins.update({win: <span class="dv">3</span>}) <span class="cf">for</span> win <span class="kw">in</span> all_equal_win] <span class="co">#add payouts for x = y = z case</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>[wins.update({win: <span class="dv">1</span>}) <span class="cf">for</span> win <span class="kw">in</span> manual_5_wins]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>[wins.update({win: <span class="dv">1</span>}) <span class="cf">for</span> win <span class="kw">in</span> manual_2_wins]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>[wins.update({win: <span class="dv">1</span>}) <span class="cf">for</span> win <span class="kw">in</span> manual_1_wins]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="test-test-test" class="level3">
 <h3 class="anchored" data-anchor-id="test-test-test">Test, test, test!</h3>
 <p>More rigorous testing ought to be done, but this captures some potential high level errors.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#tests</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> num_combinations <span class="op">==</span> <span class="bu">len</span>(combinations), <span class="st">"the number of combinations is incorrect"</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(centre_11_win) <span class="op">==</span> N1 <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> N3, <span class="st">"the number of bonus rounds is incorrect"</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(all_equal_win) <span class="op">==</span> <span class="bu">min</span>(N1, N2, N3), <span class="st">"the number of equal rounds is incorrect"</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(manual_5_wins) <span class="op">==</span> <span class="dv">4</span>, <span class="st">"the number of (5, 5, x) tuples is incorrect"</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(manual_2_wins) <span class="op">==</span> <span class="dv">4</span>, <span class="st">"the number of (2, 2, x) tuples is incorrect"</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(manual_1_wins) <span class="op">==</span> <span class="dv">4</span>, <span class="st">"the number of (1, 1, x) tuples is incorrect"</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(wins) <span class="op">==</span> <span class="bu">len</span>(centre_11_win) <span class="op">+</span> <span class="bu">len</span>(all_equal_win) <span class="op">+</span> <span class="bu">len</span>(manual_5_wins) <span class="op">+</span> <span class="bu">len</span>(manual_2_wins) <span class="op">+</span> <span class="bu">len</span>(manual_1_wins), <span class="st">"number of winning combos is incorrect"</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> lower_payout <span class="op">*</span> (<span class="bu">len</span>(lower_wins) <span class="op">/</span> <span class="bu">len</span>(lower_wins <span class="op">+</span> upper_wins)) <span class="op">+</span> upper_payout <span class="op">*</span> <span class="bu">len</span>(upper_wins) <span class="op">/</span> <span class="bu">len</span>(lower_wins <span class="op">+</span> upper_wins) <span class="op">==</span> <span class="dv">20</span>, <span class="st">"bonus roll expected payout isn't $20"</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>total_payout <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> all_equal_win <span class="op">+</span> manual_5_wins <span class="op">+</span> manual_2_wins <span class="op">+</span> manual_1_wins:</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  total_payout <span class="op">+=</span> wins[i]</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> centre_11_win:</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  total_payout <span class="op">+=</span> <span class="dv">20</span> <span class="co">#expected value of bonus rounds</span></span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>expected_value <span class="op">=</span> total_payout <span class="op">/</span> num_combinations</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> expected_value <span class="op">&lt;</span> <span class="dv">1</span>, <span class="ss">f"your payout of </span><span class="sc">{</span>expected_value<span class="sc">}</span><span class="ss"> favours the player!"</span></span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(expected_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#tests</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> num_combinations <span class="op">==</span> <span class="bu">len</span>(combinations), <span class="st">"the number of combinations is incorrect"</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(centre_11_win) <span class="op">==</span> N1 <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> N3, <span class="st">"the number of bonus rounds is incorrect"</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(all_equal_win) <span class="op">==</span> <span class="bu">min</span>(N1, N2, N3), <span class="st">"the number of equal rounds is incorrect"</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(manual_5_wins) <span class="op">==</span> <span class="dv">4</span>, <span class="st">"the number of (5, 5, x) tuples is incorrect"</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(manual_2_wins) <span class="op">==</span> <span class="dv">4</span>, <span class="st">"the number of (2, 2, x) tuples is incorrect"</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(manual_1_wins) <span class="op">==</span> <span class="dv">4</span>, <span class="st">"the number of (1, 1, x) tuples is incorrect"</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(wins) <span class="op">==</span> <span class="bu">len</span>(centre_11_win) <span class="op">+</span> <span class="bu">len</span>(all_equal_win) <span class="op">+</span> <span class="bu">len</span>(manual_5_wins) <span class="op">+</span> <span class="bu">len</span>(manual_2_wins) <span class="op">+</span> <span class="bu">len</span>(manual_1_wins), <span class="st">"number of winning combos is incorrect"</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> lower_payout <span class="op">*</span> (<span class="bu">len</span>(lower_wins) <span class="op">/</span> <span class="bu">len</span>(lower_wins <span class="op">+</span> upper_wins)) <span class="op">+</span> upper_payout <span class="op">*</span> <span class="bu">len</span>(upper_wins) <span class="op">/</span> <span class="bu">len</span>(lower_wins <span class="op">+</span> upper_wins) <span class="op">==</span> <span class="dv">20</span>, <span class="st">"bonus roll expected payout isn't $20"</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>total_payout <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> all_equal_win <span class="op">+</span> manual_5_wins <span class="op">+</span> manual_2_wins <span class="op">+</span> manual_1_wins:</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  total_payout <span class="op">+=</span> wins[i]</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> centre_11_win:</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  total_payout <span class="op">+=</span> <span class="dv">20</span> <span class="co">#expected value of bonus rounds</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>expected_value <span class="op">=</span> total_payout <span class="op">/</span> num_combinations</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> expected_value <span class="op">&lt;</span> <span class="dv">1</span>, <span class="ss">f"your payout of </span><span class="sc">{</span>expected_value<span class="sc">}</span><span class="ss"> favours the player!"</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(expected_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.9581818181818181</code></pre>
 </div>
