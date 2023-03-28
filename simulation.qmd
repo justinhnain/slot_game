@@ -227,14 +227,20 @@ This plot seems reasonably in line with the mathematical model's intended payout
 #| code-summary: "Hide the code"
 outcome |> 
   ggplot(aes(payout * 10)) + #total earned rather than earning per dollar.
-  geom_density(bw = 8.5) + #heavy smoothing because of the discrete volatility of the data.
+  geom_density(
+    bw = 8.5, ##heavy smoothing because of the discrete volatility of the data.
+    fill = "skyblue"
+  ) + 
   labs(
     subtitle = "A fair number of players saw earnings as much as 5x what they spent",
     y = "Percentage", 
     x = "Payout (earned after $10 spent per player)",
   ) +
     ggtitle(latex2exp::TeX("The plot adheres to the theoretical payout of $\\$6.65 \\approx \\$10 \\times 0.96^{10}$")) +
-  scale_x_continuous(labels = scales::label_dollar()) +
+  scale_x_continuous(
+    breaks = scales::breaks_extended(n = 7),
+    labels = scales::label_dollar()
+  ) +
   scale_y_continuous(
     breaks = scales::breaks_extended(n = 7),
     labels = scales::label_percent()
