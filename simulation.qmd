@@ -17,7 +17,7 @@ editor: visual
 import random, itertools
 ```
 
-### Define a 3-reel 1-line game
+# Define a 3-reel 1-line game
 
 ```{python}
 
@@ -35,7 +35,29 @@ num_combinations = N1*N2*N3
 combinations= list(itertools.product(x1, x2, x3))
 ```
 
+We define the set of all outcomes to be a combination of ordered triples to be$\Omega$, equal to the set of all $(x_1, x_2, x_3) \in \{x,y,z \in \mathbb{N}^3 : 1 \leq x \leq 10, 1 \leq y \leq 11, 1 \leq z \leq 5\}$\
+
 ### Include a bonus round for when the second reel is "11"
+
+In other words, if $x_2 = 11$ then its corresponding payout table is:
+
+```{python}
+#| echo: false
+
+from IPython.display import Markdown
+from tabulate import tabulate
+table = [
+         ["p(x)","1/6","1/6","1/6","1/6","1/6","1/6"],
+         ["f(x)",15, 15, 15, 15, 30, 30],
+         ]
+Markdown(tabulate(
+  table, 
+  headers=["x", "1", "2", "3", "4", "5", "6"]
+))
+
+```
+
+For which $E[x] = 20$.
 
 ```{python}
 #expected value must be $20
@@ -67,7 +89,7 @@ wins = {
   # (1, 1) : 1,
   # (2, 2) : 1
   # (x odd, 11, y) : bonus_roll() with expected payout 20,
-  # (x, y, z) : 5 when x = y = z
+  # (x, y, z) : 3 when x = y = z
 }
 
 
