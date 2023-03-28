@@ -223,7 +223,7 @@ This plot seems reasonably in line with the mathematical model's intended payout
 
 ```{r}
 #| code-fold: show
-#| code-summary: "Show the code"
+#| code-summary: "Hide the code"
 outcome |> 
   ggplot(aes(payout * 10)) + #total earned rather than earning per dollar.
   geom_density(bw = 8.5) + #heavy smoothing because of the discrete volatility of the data.
@@ -272,11 +272,14 @@ longrun_spins <- bind_rows(winning_spins, losing_spins) |>
 These data are quite zero-inflated, but the number 30 isn't too terribly extreme, and t procedures are quite robust (especially with this sample size).
 
 ```{r}
+#| code-fold: show
+#| code-summary: "Hide the code"
 p1 <- ggplot(longrun_spins, aes(payout)) +
   geom_histogram(
     binwidth = 1,
     colour = "white",
-    fill = "skyblue") +
+    fill = "skyblue"
+  ) +
   xlab("Payout per game") +
   ylab("") +
   theme_minimal()
@@ -286,7 +289,7 @@ p1 + p2 +
   plot_layout(ncol = 2)
 ```
 
-A 95% t-confidence interval for the payout per game is $0.957314 \pm 0.0086837$, which captures the theoretical expected payout of about $0.958$.
+A 95% t-confidence interval for the payout per game is $0.957314 \pm 0.0086837$, which captures the theoretical expected payout of approximately $0.958$.
 
 ```{r}
 t_test(longrun_spins, response = payout)
@@ -296,21 +299,58 @@ t_test(longrun_spins, response = payout)
 
 Even though t procedures are robust to violations of assumptions, it's best to double check any results from them. We proceed by cross-referencing with a method that requires less assumptions than t-based procedures: the **non-parametric bootstrap**.
 
+We randomly sample $N_{sample}$ observations before resampling from the sample.
+
 ```{r}
-# subset_spins <- longrun_spins |> 
-#   slice_sample(n = 10000)
-# 
-# bootstrapped_means <- subset_spins |> 
-#   rep_sample_n(size = 10000, replace = TRUE, reps = 10000) |> 
-#   group_by(replicate) |> 
-#   summarise(average_payout = mean(payout))
-# 
-# bootstrapped_means  |> 
-#   ggplot(aes(average_payout)) +
-#   geom_histogram() 
-# 
-# bootstrapped_means |>
-#   pull(average_payout) |> 
-#   quantile(c(0.025, 0.975))
-# mean(bootstrapped_means$average_payout)
+N_sample <- 10000
+
+subset_spins <- longrun_spins |>
+  slice_sample(n = N_sample)
+
+obs_stat <- mean(subset_spins$payout)
+```
+
+This is done with the help of the tidymodels statistical inference framework.
+
+```{r}
+bootstrap_stats <- specify(subset_spins, response = payout) |> 
+  generate(
+    reps = N_sample, 
+    type = "bootstrap"
+  ) |> 
+  calculate(stat = "mean")
+
+bootstrap_95_percentile_interval <- bootstrap_stats |> 
+  get_confidence_interval(
+    point_estimate = obs_stat,
+    level = 0.95
+  )
+```
+
+```{r}
+#| code-fold: show
+#| code-summary: "Hide the code"
+bootstrap_stats |> 
+  visualize(fill = "skyblue") +
+  shade_confidence_interval(bootstrap_95_percentile_interval, linetype = "dashed", size = 0.5) +
+  geom_vline(xintercept = obs_stat, linetype = "dotted", colour = "red") +
+  theme_minimal() +
+  labs(
+    x = "", 
+    y = "",
+    title = "The 95% bootstrap percentile interval also captures the theoretical payout",
+    subtitle = "The interval is a quite wider because the samples are 100x smaller than the original"
+  ) +
+  scale_y_continuous(labels = NULL) +
+  annotate(
+    geom = "text",
+    label = str_glue("Mean of \n {obs_stat}"),
+    x = obs_stat + 0.025,
+    y = 1000
+  ) +
+  geom_text(
+    data = bootstrap_95_percentile_interval |> pivot_longer(cols = 1:2),
+    aes(x = value, label = value),
+    y = 1000
+  )
 ```
