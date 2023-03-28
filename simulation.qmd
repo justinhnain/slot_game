@@ -6,6 +6,7 @@ editor: visual
 
 ```{r}
 #| output: false
+#| 
 {
   library(tidyverse)  #useful dataframe functions for R
   library(infer)      #statistical inference libraries
@@ -18,7 +19,7 @@ import random, itertools
 import pandas as pd
 ```
 
-# Define a 3-reel 1-line game
+## Define a 3-reel 1-line game
 
 ```{python}
 #elements that reels 1 to 3 can assume
@@ -42,8 +43,8 @@ We define the set of all outcomes to be a combination of ordered triples to be $
 In other words, if $x_2 = 11$ then the payout becomes an outcome of the discrete random variable $X$ with the following payout table, for which $E[x] = 20$:
 
 ```{python}
-#| echo: false
-
+#| code-fold: true
+#| code-summary: "Show the code"
 from IPython.display import Markdown
 from tabulate import tabulate
 table = [
@@ -85,7 +86,7 @@ f(w) =
   1, & \text{if } w = (2,2,x_3) \\
 1, & \text{if } w = (1,1,x_3) \\
 3, & \text{if } w\text{'s coordinates are all equal}  \\
-X, & \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 2)}
+x \in X, & \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 2)}
 \end{cases}
 $$
 
@@ -157,7 +158,7 @@ assert expected_value < 1, f"your payout of {expected_value} favours the player!
 print(expected_value)
 ```
 
-# Simulate a 3-reel 1-line game
+## Simulate a 3-reel 1-line game
 
 We begin by defining a dataframe with all possible combinations of outcomes, corresponding to $\Omega$.
 
@@ -213,7 +214,11 @@ outcome <- outcome |>
 
 ### Explore the payouts in the play sessions
 
+This plot seems reasonably in line with the mathematical model's intended payout, which states that for each dollar spent, the house exacts a toll of about \$0.04. However, it's best to examine this more rigorously.
+
 ```{r}
+#| code-fold: show
+#| code-summary: "Show the code"
 outcome |> 
   ggplot(aes(payout * 10)) + #total earned rather than earning per dollar.
   geom_density(bw = 8.5) + #heavy smoothing because of the discrete volatility of the data.
@@ -229,7 +234,5 @@ outcome |>
     labels = scales::label_percent()) +
   theme_minimal()
 ```
-
-This plot seems reasonably in line with the mathematical model's intended payout, which states that for each dollar spent, the house exacts a toll of about \$0.04. However, it's best to examine this more rigorously.
 
 ### Statistically verify the expected payout
