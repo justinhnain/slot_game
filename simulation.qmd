@@ -241,3 +241,37 @@ outcome |>
 ```
 
 ### Statistically verify the simulation's expected payout
+
+```{r}
+N_samples = 10^6
+
+longrun_spins <- slice_sample(sample_space, n = N_samples, replace = TRUE)
+
+losing_spins <- longrun_spins |> 
+  anti_join(win_df) |> 
+  mutate(payout = 0)
+
+winning_spins <- longrun_spins |> 
+  semi_join(win_df) |> 
+  rowwise() |> 
+  mutate(
+    payout = ifelse(
+      reel_2 == 11, 
+      py$bonus_roll(),
+      py$wins[str_glue("({reel_1}, {reel_2}, {reel_3})")][[1]]
+    )
+  )
+
+longrun_spins <- bind_rows(winning_spins, losing_spins)
+```
+
+Create a T confidence interval
+
+```{r}
+t_test(longrun_spins, response = payout)
+```
+
+```{r}
+longrun_spins |> 
+  slice_head(n = 1)
+```
