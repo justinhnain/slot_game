@@ -12,7 +12,6 @@ theme: darkly
   library(tidyverse)  #useful dataframe functions for R
   library(infer)      #statistical inference libraries
   library(reticulate) #allows Python and R interoperability
-  library(patchwork)  
 }
 ```
 
@@ -276,12 +275,8 @@ longrun_spins <- bind_rows(winning_spins, losing_spins) |>
 These data are quite zero-inflated, but the number 30 isn't too terribly extreme, and t procedures are quite robust (especially with this sample size).
 
 ```{r}
-#| label: plot_name
-#| layout-nrow: 2
-#| column: page
-#| output: true
-#| code-fold: show
-#| code-summary: "Hide the code"
+#| code-fold: true
+#| code-summary: "Show the code"
 p1 <- ggplot(longrun_spins, aes(payout)) +
   geom_histogram(
     binwidth = 1,
@@ -291,15 +286,19 @@ p1 <- ggplot(longrun_spins, aes(payout)) +
   xlab("Payout per game") +
   ylab("") +
   theme_minimal()
-p2 <- openintro::normTail(M = c(qnorm(0.025), qnorm(0.975)), col = "skyblue")
-
-(p1 + p2)
+p1
 ```
 
 A 95% t-confidence interval for the payout per game is $0.952729 \pm 0.0086579$, which captures the theoretical expected payout of approximately $0.958$.
 
 ```{r}
 t_test(longrun_spins, response = payout)
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+openintro::normTail(M = c(qnorm(0.025), qnorm(0.975)), col = "skyblue")
 ```
 
 ### Cross-reference the result
@@ -337,8 +336,8 @@ bootstrap_95_percentile_interval <- bootstrap_stats |>
 ```
 
 ```{r}
-#| code-fold: show
-#| code-summary: "Hide the code"
+#| code-fold: true
+#| code-summary: "Show the code"
 bootstrap_stats |> 
   visualize(fill = "skyblue") +
   shade_confidence_interval(bootstrap_95_percentile_interval, linetype = "dashed", size = 0.5) +
