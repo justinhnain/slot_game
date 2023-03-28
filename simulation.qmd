@@ -229,9 +229,9 @@ outcome |>
   labs(
     subtitle = "A fair number of players saw earnings as much as 5x what they spent.",
     y = "Percentage", 
-    x = "Payout ($10 spent per player)",
+    x = "Payout (earned after $10 spent per player)",
   ) +
-    ggtitle(latex2exp::TeX("Simulated payouts gravitate around the theoretical payout of $\\$6.65 \\approx \\$10 \\times 0.96^{10}$")) +
+    ggtitle(latex2exp::TeX("The plot adheres to the theoretical payout of $\\$6.65 \\approx \\$10 \\times 0.96^{10}$")) +
   scale_x_continuous(labels = scales::label_dollar()) +
   scale_y_continuous(
     breaks = scales::breaks_extended(n = 7),
