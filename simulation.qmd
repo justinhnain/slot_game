@@ -119,7 +119,7 @@ manual_1_wins = list(filter(lambda combo : leading_double(1, combo), combination
 
 ### Build the payout matrix
 
-In other words, we populate $f$, where $f$ is defined by "wins".
+In other words, we populate $f$, where $f$ is defined by `wins`.
 
 ```{python}
 #| output: false
@@ -168,6 +168,7 @@ print(expected_value)
 We begin by defining a dataframe with all possible combinations of outcomes, corresponding to $\Omega$.
 
 ```{python}
+
 win_keys = list(wins.keys())
 win_df = pd.DataFrame(win_keys)
 ```
@@ -188,17 +189,19 @@ win_df <- py$win_df |>
   rename(reel_1 = "0", reel_2 = "1", reel_3 = "2")
 ```
 
-Then, we simulate $N$ games by sampling from $\Omega\text{'s}$ dataframe with replacement.
+Then, we simulate `outcome`s from $N_{spins}$ spins across $N_{sessions}$ sessions by sampling from $\Omega\text{'s}$ dataframe with replacement.
 
 ```{r}
 
-N <- 10^2
+N_spins <- 10
+N_sessions <- 1000
 
-N_spins <- game_df |> 
-  slice_sample(n = N, replace = TRUE)
+outcome <- game_df |>
+  rep_sample_n(size = N_spins, replace = TRUE, reps = N_sessions) |> 
+  mutate(replicate = as_factor(replicate)) |> 
+  semi_join(win_df, by = join_by(reel_1, reel_2, reel_3)) ## identifies all hits.
 
-N_spins |> 
-  intersect(win_df) |> ## identifies all hits.
+outcome <- outcome |> 
   rowwise() |> ##prevents recycling of bonus_roll
   mutate(
     payout = ifelse(
@@ -207,6 +210,12 @@ N_spins |>
       py$wins[str_glue("({reel_1}, {reel_2}, {reel_3})")][[1]]
     )
   ) |> 
-  ungroup() |> 
+  group_by(replicate) |> 
   summarise(payout = sum(payout) / N)
+        
+outcome <- outcome |> 
+  complete(replicate) |> 
+  mutate(
+    payout = if_else(is.na(payout), 0, payout)
+  )
 ```
