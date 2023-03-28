@@ -156,7 +156,7 @@ for k in centre_11_win:
 expected_value = total_payout / num_combinations
 
 assert expected_value < 1, f"your payout of {expected_value} favours the player!"
-print(expected_value)
+print("The long-run theoretical payout per dollar is $" + str(round(expected_value, 4)))
 ```
 
 ## Simulate a 3-reel 1-line game
