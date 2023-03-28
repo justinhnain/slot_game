@@ -78,7 +78,7 @@ def bonus_roll():
 
 ### Define the payout matrix and winning combos
 
-We define the set of winning combinations $W \subset \Omega$ to be equal to $\{(x,y,z) \in \Omega: y = 11 \lor (x,y) \in \{(5,5), (1,1), (2,2)\}\lor x=y=z\}$ and the payout function $$f: W \rightarrow \mathbb{R}$$ such that
+We define the set of winning combinations $W \subset \Omega$ to be equal to $\{(x,y,z) \in \Omega: (y = 11\land x \equiv\text{1 (mod 2)}) \lor (x,y) \in \{(5,5), (1,1), (2,2)\}\lor x=y=z\}$ and the payout function $$f: W \rightarrow \mathbb{R}$$ such that
 
 $$
 f(w) = 
@@ -298,7 +298,9 @@ t_test(longrun_spins, response = payout)
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
-openintro::normTail(M = c(qnorm(0.025), qnorm(0.975)), col = "skyblue")
+lr_mean <- mean(longrun_spins$payout)
+lr_se <- sd(longrun_spins$payout)/sqrt(N_samples)
+openintro::normTail(m = lr_mean, s = lr_se, M = c(qnorm(0.025, mean = lr_mean, sd = lr_se), qnorm(0.975, mean = lr_mean, sd = lr_se)), col = "skyblue")
 ```
 
 ### Cross-reference the result
