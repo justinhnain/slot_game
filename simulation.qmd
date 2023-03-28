@@ -15,6 +15,7 @@ editor: visual
 
 ```{python}
 import random, itertools
+import pandas as pd
 ```
 
 # Define a 3-reel 1-line game
@@ -39,7 +40,7 @@ We define the set of all outcomes to be a combination of ordered triples to be$\
 
 ### Include a bonus round for when the second reel is "11"
 
-In other words, if $x_2 = 11$ leads to the payout being an outcome of the discrete random variable $X$ with the following payout table, for which $E[x] = 20$.:
+In other words, if $x_2 = 11$ leads to the payout being an outcome of the discrete random variable $X$ with the following payout table, for which $E[x] = 20$:
 
 ```{python}
 #| echo: false
@@ -129,8 +130,6 @@ In other words, we populate $f$, where $f$ is defined by "wins".
 [wins.update({win: 1}) for win in manual_5_wins]
 [wins.update({win: 1}) for win in manual_2_wins]
 [wins.update({win: 1}) for win in manual_1_wins]
-
-
 ```
 
 ### Test, test, test!
@@ -166,16 +165,48 @@ print(expected_value)
 
 # Simulate a 3-reel 1-line game
 
+We begin by defining a dataframe with all possible combinations of outcomes, corresponding to $\Omega$.
+
+```{python}
+win_keys = list(wins.keys())
+win_df = pd.DataFrame(win_keys)
+```
+
 ```{r}
 
-game_df <- expand.grid(py$x1, py$x2, py$x3) |> 
+outcome_df <- expand.grid(py$x1, py$x2, py$x3) |> 
   as_tibble()
-game_df <- game_df |> 
+outcome_df <- outcome_df |> 
   rename(
     reel_1 = Var1, 
     reel_2 = Var2, 
     reel_3 = Var3
   )
 
-game_df
+win_df <- py$win_df |> 
+  as_tibble() |> 
+  rename(reel_1 = "0", reel_2 = "1", reel_3 = "2")
+```
+
+Then, we simulate $N$ games by sampling from $\Omega\text{'s}$ dataframe with replacement.
+
+```{r}
+
+N <- 10^2
+
+N_spins <- game_df |> 
+  slice_sample(n = N, replace = TRUE)
+
+N_spins |> 
+  intersect(win_df) |> ## identifies all hits.
+  rowwise() |> ##prevents recycling of bonus_roll
+  mutate(
+    payout = ifelse(
+      reel_2 == 11, 
+      py$bonus_roll(),
+      py$wins[str_glue("({reel_1}, {reel_2}, {reel_3})")][[1]]
+    )
+  ) |> 
+  ungroup() |> 
+  summarise(payout = sum(payout) / N)
 ```
