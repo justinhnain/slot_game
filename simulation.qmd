@@ -59,6 +59,7 @@ Markdown(tabulate(
 ```
 
 ```{python}
+
 #expected value must be $20
 
 lower_wins = [1, 2, 3, 4]
@@ -175,9 +176,9 @@ win_df = pd.DataFrame(win_keys)
 
 ```{r}
 
-outcome_df <- expand.grid(py$x1, py$x2, py$x3) |> 
+sample_space <- expand.grid(py$x1, py$x2, py$x3) |> 
   as_tibble()
-outcome_df <- outcome_df |> 
+sample_space <- sample_space |> 
   rename(
     reel_1 = Var1, 
     reel_2 = Var2, 
@@ -189,14 +190,14 @@ win_df <- py$win_df |>
   rename(reel_1 = "0", reel_2 = "1", reel_3 = "2")
 ```
 
-Then, we simulate `outcome`s from $N_{spins}$ spins across $N_{sessions}$ sessions by sampling from $\Omega\text{'s}$ dataframe with replacement.
+Then, we simulate `outcome`s from $N_{spins}$ spins across $N_{sessions}$ sessions by sampling from the sample space $\Omega\text{'s}$ dataframe, with replacement.
 
 ```{r}
 
 N_spins <- 10
-N_sessions <- 1000
+N_sessions <- 10000
 
-outcome <- game_df |>
+outcome <- sample_space |>
   rep_sample_n(size = N_spins, replace = TRUE, reps = N_sessions) |> 
   mutate(replicate = as_factor(replicate)) |> 
   semi_join(win_df, by = join_by(reel_1, reel_2, reel_3)) ## identifies all hits.
@@ -211,7 +212,7 @@ outcome <- outcome |>
     )
   ) |> 
   group_by(replicate) |> 
-  summarise(payout = sum(payout) / N)
+  summarise(payout = sum(payout) / 10)
         
 outcome <- outcome |> 
   complete(replicate) |> 
@@ -219,3 +220,26 @@ outcome <- outcome |>
     payout = if_else(is.na(payout), 0, payout)
   )
 ```
+
+### Explore the payouts in the play sessions
+
+This plot seems reasonably in line with the mathematical model's intended payout, which states that for each dollar spent, the house exacts a toll of about \$0.04. However, it's best to examine this more rigorously.
+
+```{r}
+outcome |> 
+  ggplot(aes(payout * 10)) + #total earned rather than earning per dollar.
+  geom_density(bw = 8.5) + #heavy smoothing because of the discrete volatility of the data.
+  labs(
+    title = str_glue("Payouts observed over {N_sessions} play sessions"),
+    subtitle = "A fair number of players saw earnings as high as $50.",
+    y = "Percentage", 
+    x = "Payout ($10 spent per player)",
+  ) +
+  scale_x_continuous(labels = scales::label_dollar()) +
+  scale_y_continuous(
+    breaks = scales::breaks_extended(n = 7),
+    labels = scales::label_percent()) +
+  theme_minimal()
+```
+
+### Statistically verify the expected payout
