@@ -35,11 +35,11 @@ num_combinations = N1*N2*N3
 combinations= list(itertools.product(x1, x2, x3))
 ```
 
-We define the set of all outcomes to be a combination of ordered triples to be$\Omega$, equal to the set of all $(x_1, x_2, x_3) \in \{x,y,z \in \mathbb{N}^3 : 1 \leq x \leq 10, 1 \leq y \leq 11, 1 \leq z \leq 5\}$\
+We define the set of all outcomes to be a combination of ordered triples to be $\Omega$, equal to the set of all $(x_1, x_2, x_3) \in \{x,y,z \in \mathbb{N}^3 : 1 \leq x \leq 10, 1 \leq y \leq 11, 1 \leq z \leq 5\}$\
 
 ### Include a bonus round for when the second reel is "11"
 
-In other words, if $x_2 = 11$ leads to the payout being an outcome of the discrete random variable $X$ with the following payout table, for which $E[x] = 20$:
+In other words, if $x_2 = 11$ then the payout becomes an outcome of the discrete random variable $X$ with the following payout table, for which $E[x] = 20$:
 
 ```{python}
 #| echo: false
@@ -213,14 +213,12 @@ outcome <- outcome |>
 
 ### Explore the payouts in the play sessions
 
-This plot seems reasonably in line with the mathematical model's intended payout, which states that for each dollar spent, the house exacts a toll of about \$0.04. However, it's best to examine this more rigorously.
-
 ```{r}
 outcome |> 
   ggplot(aes(payout * 10)) + #total earned rather than earning per dollar.
   geom_density(bw = 8.5) + #heavy smoothing because of the discrete volatility of the data.
   labs(
-    title = str_glue("Payouts observed over {N_sessions} play sessions"),
+    title = str_glue("Payouts observed over {prettyNum({N_sessions}, big.mark = ',')} play sessions where players spent ${N_spins}"),
     subtitle = "A fair number of players saw earnings as high as 5x what they spent.",
     y = "Percentage", 
     x = "Payout ($10 spent per player)",
@@ -231,5 +229,7 @@ outcome |>
     labels = scales::label_percent()) +
   theme_minimal()
 ```
+
+This plot seems reasonably in line with the mathematical model's intended payout, which states that for each dollar spent, the house exacts a toll of about \$0.04. However, it's best to examine this more rigorously.
 
 ### Statistically verify the expected payout
