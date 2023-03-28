@@ -371,3 +371,7 @@ bootstrap_stats |>
     y = 1000
   )
 ```
+
+## Implement the game
+
+Coming soon!
