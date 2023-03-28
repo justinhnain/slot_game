@@ -21,7 +21,6 @@ import pandas as pd
 # Define a 3-reel 1-line game
 
 ```{python}
-
 #elements that reels 1 to 3 can assume
 N1 = 10
 N2 = 11
@@ -59,9 +58,6 @@ Markdown(tabulate(
 ```
 
 ```{python}
-
-#expected value must be $20
-
 lower_wins = [1, 2, 3, 4]
 upper_wins = [5, 6]
 
@@ -74,7 +70,8 @@ def bonus_roll():
     return lower_payout
   else:
     return upper_payout
-
+  
+#expected value must be $20
 ```
 
 ### Define the payout matrix and winning combos
@@ -88,14 +85,12 @@ f(w) =
   1, & \text{if } w = (2,2,x_3) \\
 1, & \text{if } w = (1,1,x_3) \\
 3, & \text{if } w\text{'s coordinates are all equal}  \\
-X, & \text{if } w = (x_1, 11, x_3)
+X, & \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 2)}
 \end{cases}
 $$
 
 ```{python}
 #| output: false
-
-
 #winning combos & payouts
 wins = {
   # (5, 5) : 1,
@@ -124,7 +119,6 @@ In other words, we populate $f$, where $f$ is defined by `wins`.
 
 ```{python}
 #| output: false
-
 #add payout combos to win dictionary
 [wins.update({win: bonus_roll}) for win in centre_11_win]
 [wins.update({win: 3}) for win in all_equal_win] #add payouts for x = y = z case
@@ -138,7 +132,6 @@ In other words, we populate $f$, where $f$ is defined by `wins`.
 More rigorous testing ought to be done, but this captures some potential high level errors.
 
 ```{python}
-
 #tests
 assert num_combinations == len(combinations), "the number of combinations is incorrect"
 assert len(centre_11_win) == N1 / 2 * N3, "the number of bonus rounds is incorrect"
@@ -169,13 +162,11 @@ print(expected_value)
 We begin by defining a dataframe with all possible combinations of outcomes, corresponding to $\Omega$.
 
 ```{python}
-
 win_keys = list(wins.keys())
 win_df = pd.DataFrame(win_keys)
 ```
 
 ```{r}
-
 sample_space <- expand.grid(py$x1, py$x2, py$x3) |> 
   as_tibble()
 sample_space <- sample_space |> 
@@ -193,7 +184,6 @@ win_df <- py$win_df |>
 Then, we simulate `outcome`s from $N_{spins}$ spins across $N_{sessions}$ sessions by sampling from the sample space $\Omega\text{'s}$ dataframe, with replacement.
 
 ```{r}
-
 N_spins <- 10
 N_sessions <- 10000
 
@@ -231,7 +221,7 @@ outcome |>
   geom_density(bw = 8.5) + #heavy smoothing because of the discrete volatility of the data.
   labs(
     title = str_glue("Payouts observed over {N_sessions} play sessions"),
-    subtitle = "A fair number of players saw earnings as high as $50.",
+    subtitle = "A fair number of players saw earnings as high as 5x what they spent.",
     y = "Percentage", 
     x = "Payout ($10 spent per player)",
   ) +
