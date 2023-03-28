@@ -38,13 +38,13 @@ combinations= list(itertools.product(x1, x2, x3))
 ### Include a bonus round for when the second reel is "11"
 
 ```{python}
-#expected value must be $30
+#expected value must be $20
 
 lower_wins = [1, 2, 3, 4]
 upper_wins = [5, 6]
 
-lower_payout = 20
-upper_payout = 50
+lower_payout = 15
+upper_payout = 30
 
 def bonus_roll():
   roll = random.randint(1,6)
@@ -63,11 +63,11 @@ def bonus_roll():
 
 #winning combos & payouts
 wins = {
-  # (5, 5) : 5,
+  # (5, 5) : 1,
   # (1, 1) : 1,
   # (2, 2) : 1
-  # (x odd, 11, y) : bonus_roll() with expected payout 30,
-  # (x, y, z) : 15 when x = y = z
+  # (x odd, 11, y) : bonus_roll() with expected payout 20,
+  # (x, y, z) : 5 when x = y = z
 }
 
 
@@ -90,8 +90,8 @@ manual_1_wins = list(filter(lambda combo : leading_double(1, combo), combination
 
 #add payout combos to win dictionary
 [wins.update({win: bonus_roll}) for win in centre_11_win]
-[wins.update({win: 15}) for win in all_equal_win] #add payouts for x = y = z case
-[wins.update({win: 5}) for win in manual_5_wins]
+[wins.update({win: 3}) for win in all_equal_win] #add payouts for x = y = z case
+[wins.update({win: 1}) for win in manual_5_wins]
 [wins.update({win: 1}) for win in manual_2_wins]
 [wins.update({win: 1}) for win in manual_1_wins]
 
@@ -112,16 +112,17 @@ assert len(manual_1_wins) == 4, "the number of (1, 1, x) tuples is incorrect"
 
 assert len(wins) == len(centre_11_win) + len(all_equal_win) + len(manual_5_wins) + len(manual_2_wins) + len(manual_1_wins), "number of winning combos is incorrect"
 
-assert lower_payout * (len(lower_wins) / len(lower_wins + upper_wins)) + upper_payout * len(upper_wins) / len(lower_wins + upper_wins) == 30, "bonus roll expected payout isn't $30"
+assert lower_payout * (len(lower_wins) / len(lower_wins + upper_wins)) + upper_payout * len(upper_wins) / len(lower_wins + upper_wins) == 20, "bonus roll expected payout isn't $20"
 
 
 total_payout = 0
 for i in all_equal_win + manual_5_wins + manual_2_wins + manual_1_wins:
   total_payout += wins[i]
 for k in centre_11_win:
-  total_payout += wins[k]()
+  total_payout += 20 #expected value of bonus rounds
   
 expected_value = total_payout / num_combinations
 
-assert expected_value < 1, "your payout favours the player!"
+assert expected_value < 1, f"your payout of {expected_value} favours the player!"
+print(expected_value)
 ```
