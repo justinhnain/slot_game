@@ -114,5 +114,14 @@ assert len(wins) == len(centre_11_win) + len(all_equal_win) + len(manual_5_wins)
 
 assert lower_payout * (len(lower_wins) / len(lower_wins + upper_wins)) + upper_payout * len(upper_wins) / len(lower_wins + upper_wins) == 30, "bonus roll expected payout isn't $30"
 
-# expected_value = total_payout / num_combinations #payout percentage
+
+total_payout = 0
+for i in all_equal_win + manual_5_wins + manual_2_wins + manual_1_wins:
+  total_payout += wins[i]
+for k in centre_11_win:
+  total_payout += wins[k]()
+  
+expected_value = total_payout / num_combinations
+
+assert expected_value < 1, "your payout favours the player!"
 ```
