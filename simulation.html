@@ -363,11 +363,11 @@ x \in X, &amp; \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(payout <span class="sc">*</span> <span class="dv">10</span>)) <span class="sc">+</span> <span class="co">#total earned rather than earning per dollar.</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">bw =</span> <span class="fl">8.5</span>) <span class="sc">+</span> <span class="co">#heavy smoothing because of the discrete volatility of the data.</span></span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"A fair number of players saw earnings as high as 5x what they spent."</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"A fair number of players saw earnings as much as 5x what they spent"</span>,</span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Percentage"</span>, </span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Payout ($10 spent per player)"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Payout (earned after $10 spent per player)"</span>,</span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(latex2exp<span class="sc">::</span><span class="fu">TeX</span>(<span class="st">"Simulated payouts gravitate around the theoretical payout of $</span><span class="sc">\\</span><span class="st">$6.65 </span><span class="sc">\\</span><span class="st">approx </span><span class="sc">\\</span><span class="st">$10 </span><span class="sc">\\</span><span class="st">times 0.96^{10}$"</span>)) <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(latex2exp<span class="sc">::</span><span class="fu">TeX</span>(<span class="st">"The plot adheres to the theoretical payout of $</span><span class="sc">\\</span><span class="st">$6.65 </span><span class="sc">\\</span><span class="st">approx </span><span class="sc">\\</span><span class="st">$10 </span><span class="sc">\\</span><span class="st">times 0.96^{10}$"</span>)) <span class="sc">+</span></span>
 <span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_dollar</span>()) <span class="sc">+</span></span>
 <span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
 <span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> scales<span class="sc">::</span><span class="fu">breaks_extended</span>(<span class="at">n =</span> <span class="dv">7</span>),</span>
@@ -380,8 +380,8 @@ x \in X, &amp; \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 
 </div>
 </div>
 </section>
-<section id="statistically-verify-the-expected-payout" class="level3">
-<h3 class="anchored" data-anchor-id="statistically-verify-the-expected-payout">Statistically verify the expected payout</h3>
+<section id="statistically-verify-the-simulations-expected-payout" class="level3">
+<h3 class="anchored" data-anchor-id="statistically-verify-the-simulations-expected-payout">Statistically verify the simulation’s expected payout</h3>
 </section>
 </section>
 

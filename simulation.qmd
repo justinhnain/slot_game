@@ -227,7 +227,7 @@ outcome |>
   ggplot(aes(payout * 10)) + #total earned rather than earning per dollar.
   geom_density(bw = 8.5) + #heavy smoothing because of the discrete volatility of the data.
   labs(
-    subtitle = "A fair number of players saw earnings as much as 5x what they spent.",
+    subtitle = "A fair number of players saw earnings as much as 5x what they spent",
     y = "Percentage", 
     x = "Payout (earned after $10 spent per player)",
   ) +
@@ -240,4 +240,4 @@ outcome |>
   theme_minimal()
 ```
 
-### Statistically verify the expected payout
+### Statistically verify the simulation's expected payout
