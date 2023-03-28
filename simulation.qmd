@@ -349,7 +349,7 @@ bootstrap_stats |>
     x = "", 
     y = "",
     title = "The 95% bootstrap percentile interval also captures the theoretical payout",
-    subtitle = "The interval is a quite wider because the samples are 100x smaller than the original"
+    subtitle = "The interval is a quite wide because the samples are 100x smaller than the original"
   ) +
   scale_y_continuous(labels = NULL) +
   annotate(
