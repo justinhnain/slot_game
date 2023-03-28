@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Summoned Plunderer</title>
+<title>Altar of the God of Chaos</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -92,10 +92,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="simulation_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="simulation_files/libs/quarto-html/anchor.min.js"></script>
 <link href="simulation_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="simulation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="simulation_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="simulation_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="simulation_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="simulation_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="simulation_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
@@ -105,11 +105,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Summoned Plunderer</h1>
+<h1 class="title">Altar of the God of Chaos</h1>
 </div>
 
 
@@ -128,7 +128,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)  <span class="co">#useful dataframe functions for R</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(infer)      <span class="co">#statistical inference libraries</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(reticulate) <span class="co">#allows Python and R interoperability</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(patchwork)  </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random, itertools</span>
@@ -152,9 +153,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>We define the set of all outcomes to be a combination of ordered triples to be <span class="math inline">\(\Omega\)</span>, equal to the set of all <span class="math inline">\((x_1, x_2, x_3) \in \{x,y,z \in \mathbb{N}^3 : 1 \leq x \leq 10, 1 \leq y \leq 11, 1 \leq z \leq 5\}\)</span><br>
 </p>
-<section id="include-a-bonus-round-for-when-the-second-reel-is-11" class="level3">
-<h3 class="anchored" data-anchor-id="include-a-bonus-round-for-when-the-second-reel-is-11">Include a bonus round for when the second reel is “11”</h3>
-<p>In other words, if <span class="math inline">\(x_2 = 11\)</span> then the payout becomes an outcome of the discrete random variable <span class="math inline">\(X\)</span> with the following payout table, for which <span class="math inline">\(E[x] = 20\)</span>:</p>
+<section id="include-a-bonus-round-for-when-the-second-reel-is-11-and-the-first-reel-is-odd" class="level3">
+<h3 class="anchored" data-anchor-id="include-a-bonus-round-for-when-the-second-reel-is-11-and-the-first-reel-is-odd">Include a bonus round for when the second reel is “11” and the first reel is odd</h3>
+<p>In other words, if <span class="math inline">\(x_2 = 11\)</span> and <span class="math inline">\(x_1 \equiv 1\text{ (mod 2)}\)</span> then the payout becomes an outcome of the discrete random variable <span class="math inline">\(X\)</span> with the following payout table, for which <span class="math inline">\(E[q(X)] = 20\)</span>:</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
@@ -259,7 +260,7 @@ x \in X, &amp; \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 
 </section>
 <section id="build-the-payout-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="build-the-payout-matrix">Build the payout matrix</h3>
-<p>In other words, we populate <span class="math inline">\(f\)</span>, where <span class="math inline">\(f\)</span> is defined by <code>wins</code>.</p>
+<p>In other words, we populate <span class="math inline">\(f\)</span>, where <span class="math inline">\(f\)</span> is defined by <code>wins</code>. Building <code>wins</code> as a dictionary makes <code>wins</code> easy to test, because discrete outcomes allow us to establish a bijection between <code>wins</code> and the intended payout function called <span class="math inline">\(f\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#add payout combos to win dictionary</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>[wins.update({win: bonus_roll}) <span class="cf">for</span> win <span class="kw">in</span> centre_11_win]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -302,7 +303,7 @@ x \in X, &amp; \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 
 </div>
 </section>
 </section>
-<section id="simulate-a-3-reel-1-line-game" class="level2">
+<section id="simulate-a-3-reel-1-line-game" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="simulate-a-3-reel-1-line-game">Simulate a 3-reel 1-line game</h2>
 <p>We begin by constructing a dataframe with all possible combinations of outcomes, corresponding to <span class="math inline">\(\Omega\)</span>.</p>
 <div class="cell">
@@ -315,7 +316,7 @@ x \in X, &amp; \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">reel_3 =</span> Var3</span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Followed by constructing the dataframe <code>win_df</code> of winning combinations <span class="math display">\[W \subset \Omega.\]</span></p>
+<p>Followed by constructing the dataframe <code>win_df</code> of winning combinations <span class="math inline">\(W \subset \Omega\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>win_keys <span class="op">=</span> <span class="bu">list</span>(wins.keys())</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>win_df <span class="op">=</span> pd.DataFrame(win_keys)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -347,7 +348,7 @@ x \in X, &amp; \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 
 <span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(replicate) <span class="sc">|&gt;</span> </span>
 <span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">payout =</span> <span class="fu">sum</span>(payout) <span class="sc">/</span> <span class="dv">10</span>)</span>
 <span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>outcome <span class="ot">&lt;-</span> outcome <span class="sc">|&gt;</span> </span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>outcome <span class="ot">&lt;-</span> outcome <span class="sc">|&gt;</span> <span class="co">#fills missing games with 0 payouts</span></span>
 <span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(replicate) <span class="sc">|&gt;</span> </span>
 <span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">payout =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(payout), <span class="dv">0</span>, payout)</span>
@@ -358,7 +359,7 @@ x \in X, &amp; \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 
 <p>This plot seems reasonably in line with the mathematical model’s intended payout, which states that for each dollar spent, the house exacts a toll of about $0.04. However, it’s best to examine this more rigorously.</p>
 <div class="cell">
 <details open="">
-<summary>Show the code</summary>
+<summary>Hide the code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>outcome <span class="sc">|&gt;</span> </span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(payout <span class="sc">*</span> <span class="dv">10</span>)) <span class="sc">+</span> <span class="co">#total earned rather than earning per dollar.</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">bw =</span> <span class="fl">8.5</span>) <span class="sc">+</span> <span class="co">#heavy smoothing because of the discrete volatility of the data.</span></span>
@@ -380,8 +381,133 @@ x \in X, &amp; \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 
 </div>
 </div>
 </section>
-<section id="statistically-verify-the-simulations-expected-payout" class="level3">
+<section id="statistically-verify-the-simulations-expected-payout" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="statistically-verify-the-simulations-expected-payout">Statistically verify the simulation’s expected payout</h3>
+<p>We begin by constructing a long-run play session with 1,000,000 pulls of the lever.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">11334</span>) <span class="co">#reproducibility</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>N_samples <span class="ot">=</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">6</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>longrun_spins <span class="ot">&lt;-</span> <span class="fu">slice_sample</span>(sample_space, <span class="at">n =</span> N_samples, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>losing_spins <span class="ot">&lt;-</span> longrun_spins <span class="sc">|&gt;</span> </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(win_df) <span class="sc">|&gt;</span> </span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">payout =</span> <span class="dv">0</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>winning_spins <span class="ot">&lt;-</span> longrun_spins <span class="sc">|&gt;</span> </span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">semi_join</span>(win_df) <span class="sc">|&gt;</span> </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">payout =</span> <span class="fu">ifelse</span>(</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>      reel_2 <span class="sc">==</span> <span class="dv">11</span>, </span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>      py<span class="sc">$</span><span class="fu">bonus_roll</span>(),</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>      py<span class="sc">$</span>wins[<span class="fu">str_glue</span>(<span class="st">"({reel_1}, {reel_2}, {reel_3})"</span>)][[<span class="dv">1</span>]]</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>longrun_spins <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(winning_spins, losing_spins) <span class="sc">|&gt;</span> </span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>These data are quite zero-inflated, but the number 30 isn’t too terribly extreme, and t procedures are quite robust (especially with this sample size).</p>
+<div class="page-columns page-full">
+<details open="">
+<summary>Hide the code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(longrun_spins, <span class="fu">aes</span>(payout)) <span class="sc">+</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">binwidth =</span> <span class="dv">1</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"white"</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"skyblue"</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Payout per game"</span>) <span class="sc">+</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> openintro<span class="sc">::</span><span class="fu">normTail</span>(<span class="at">M =</span> <span class="fu">c</span>(<span class="fu">qnorm</span>(<span class="fl">0.025</span>), <span class="fu">qnorm</span>(<span class="fl">0.975</span>)), <span class="at">col =</span> <span class="st">"skyblue"</span>)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>(p1 <span class="sc">+</span> p2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell column-page quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p><img src="simulation_files/figure-html/plot_name-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p><img src="simulation_files/figure-html/plot_name-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+</div>
+<p>A 95% t-confidence interval for the payout per game is <span class="math inline">\(0.952729 \pm 0.0086579\)</span>, which captures the theoretical expected payout of approximately <span class="math inline">\(0.958\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t_test</span>(longrun_spins, <span class="at">response =</span> payout)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 7
+  statistic   t_df p_value alternative estimate lower_ci upper_ci
+      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+1      216. 999999       0 two.sided      0.954    0.945    0.962</code></pre>
+</div>
+</div>
+</section>
+<section id="cross-reference-the-result" class="level3">
+<h3 class="anchored" data-anchor-id="cross-reference-the-result">Cross-reference the result</h3>
+<p>Even though t procedures are robust to violations of assumptions, it’s best to double check any results from them. We proceed by cross-referencing with a method that requires less assumptions than t-based procedures: the <strong>non-parametric bootstrap</strong>.</p>
+<p>We randomly sample <span class="math inline">\(N_{sample}\)</span> observations before resampling from the sample.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12347</span>) <span class="co">#reproducibility</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>N_sample <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>subset_spins <span class="ot">&lt;-</span> longrun_spins <span class="sc">|&gt;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> N_sample)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>obs_stat <span class="ot">&lt;-</span> <span class="fu">mean</span>(subset_spins<span class="sc">$</span>payout)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This is done with the help of the tidymodels statistical inference framework.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12347</span>) <span class="co">#reproducibility</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>bootstrap_stats <span class="ot">&lt;-</span> <span class="fu">specify</span>(subset_spins, <span class="at">response =</span> payout) <span class="sc">|&gt;</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate</span>(</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> N_sample, </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"bootstrap"</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">calculate</span>(<span class="at">stat =</span> <span class="st">"mean"</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>bootstrap_95_percentile_interval <span class="ot">&lt;-</span> bootstrap_stats <span class="sc">|&gt;</span> </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_confidence_interval</span>(</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">point_estimate =</span> obs_stat,</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">level =</span> <span class="fl">0.95</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<details open="">
+<summary>Hide the code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>bootstrap_stats <span class="sc">|&gt;</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">visualize</span>(<span class="at">fill =</span> <span class="st">"skyblue"</span>) <span class="sc">+</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">shade_confidence_interval</span>(bootstrap_95_percentile_interval, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> obs_stat, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">""</span>, </span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"The 95% bootstrap percentile interval also captures the theoretical payout"</span>,</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"The interval is a quite wider because the samples are 100x smaller than the original"</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">geom =</span> <span class="st">"text"</span>,</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">str_glue</span>(<span class="st">"Mean of </span><span class="sc">\n</span><span class="st"> {obs_stat}"</span>),</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> obs_stat <span class="sc">+</span> <span class="fl">0.025</span>,</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="dv">1000</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> bootstrap_95_percentile_interval <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>),</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">label =</span> value),</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="dv">1000</span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="simulation_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 </section>
 

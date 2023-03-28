@@ -2,6 +2,7 @@
 title: "Altar of the God of Chaos"
 format: html
 editor: visual
+theme: darkly
 ---
 
 ```{r}
@@ -190,6 +191,7 @@ win_df <- py$win_df |>
 Then, we simulate `outcome`s from $N_{spins}$ spins across $N_{sessions}$ sessions by sampling from the sample space $\Omega\text{'s}$ dataframe, with replacement.
 
 ```{r}
+#| output: false
 N_spins <- 10
 N_sessions <- 10000
 
@@ -246,6 +248,8 @@ outcome |>
 We begin by constructing a long-run play session with 1,000,000 pulls of the lever.
 
 ```{r}
+#| output: false
+set.seed(11334) #reproducibility
 N_samples = 10^6
 
 longrun_spins <- slice_sample(sample_space, n = N_samples, replace = TRUE)
@@ -272,6 +276,10 @@ longrun_spins <- bind_rows(winning_spins, losing_spins) |>
 These data are quite zero-inflated, but the number 30 isn't too terribly extreme, and t procedures are quite robust (especially with this sample size).
 
 ```{r}
+#| label: plot_name
+#| layout-nrow: 2
+#| column: page
+#| output: true
 #| code-fold: show
 #| code-summary: "Hide the code"
 p1 <- ggplot(longrun_spins, aes(payout)) +
@@ -285,11 +293,10 @@ p1 <- ggplot(longrun_spins, aes(payout)) +
   theme_minimal()
 p2 <- openintro::normTail(M = c(qnorm(0.025), qnorm(0.975)), col = "skyblue")
 
-p1 + p2 + 
-  plot_layout(ncol = 2)
+(p1 + p2)
 ```
 
-A 95% t-confidence interval for the payout per game is $0.957314 \pm 0.0086837$, which captures the theoretical expected payout of approximately $0.958$.
+A 95% t-confidence interval for the payout per game is $0.952729 \pm 0.0086579$, which captures the theoretical expected payout of approximately $0.958$.
 
 ```{r}
 t_test(longrun_spins, response = payout)
@@ -302,6 +309,7 @@ Even though t procedures are robust to violations of assumptions, it's best to d
 We randomly sample $N_{sample}$ observations before resampling from the sample.
 
 ```{r}
+set.seed(12347) #reproducibility
 N_sample <- 10000
 
 subset_spins <- longrun_spins |>
@@ -313,6 +321,7 @@ obs_stat <- mean(subset_spins$payout)
 This is done with the help of the tidymodels statistical inference framework.
 
 ```{r}
+set.seed(12347) #reproducibility
 bootstrap_stats <- specify(subset_spins, response = payout) |> 
   generate(
     reps = N_sample, 
