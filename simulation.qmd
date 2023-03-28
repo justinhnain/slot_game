@@ -290,7 +290,8 @@ p1 <- ggplot(longrun_spins, aes(payout)) +
     fill = "skyblue"
   ) +
   xlab("Payout per game") +
-  ylab("") +
+  ylab("Games played") +
+  scale_x_continuous(breaks = scales::breaks_extended(n = 7)) +
   theme_minimal()
 p1
 ```
