@@ -5,7 +5,7 @@ editor: visual
 ---
 
 ```{r}
-
+#| output: false
 {
   library(tidyverse)  #useful dataframe functions for R
   library(infer)      #statistical inference libraries
@@ -16,6 +16,8 @@ editor: visual
 ```{python}
 import random, itertools
 ```
+
+### Define a 3-reel 1-line game
 
 ```{python}
 
@@ -32,6 +34,8 @@ x3 = list(range(1,N3 + 1))
 num_combinations = N1*N2*N3
 combinations= list(itertools.product(x1, x2, x3))
 ```
+
+### Include a bonus round for when the second reel is "11"
 
 ```{python}
 #expected value must be $30
@@ -51,8 +55,10 @@ def bonus_roll():
 
 ```
 
+### Define the payout matrix and winning combos
+
 ```{python}
-#| echo: false
+#| output: false
 
 
 #winning combos & payouts
@@ -75,6 +81,13 @@ manual_5_wins = list(filter(lambda combo : leading_double(5, combo), combination
 manual_2_wins = list(filter(lambda combo : leading_double(2, combo), combinations))
 manual_1_wins = list(filter(lambda combo : leading_double(1, combo), combinations))
 
+```
+
+### Build the payout matrix
+
+```{python}
+#| output: false
+
 #add payout combos to win dictionary
 [wins.update({win: bonus_roll}) for win in centre_11_win]
 [wins.update({win: 15}) for win in all_equal_win] #add payouts for x = y = z case
@@ -85,23 +98,7 @@ manual_1_wins = list(filter(lambda combo : leading_double(1, combo), combination
 
 ```
 
-```{python}
-
-#expected value must be $30
-
-lower_wins = [1, 2, 3, 4]
-upper_wins = [5, 6]
-
-lower_payout = 20
-upper_payout = 50
-
-def bonus_roll():
-  roll = random.randint(1,6)
-  if (roll in lower_wins):
-    return lower_payout
-  else:
-    return upper_payout
-```
+### Test, test, test!
 
 ```{python}
 
@@ -112,6 +109,8 @@ assert len(all_equal_win) == min(N1, N2, N3), "the number of equal rounds is inc
 assert len(manual_5_wins) == 4, "the number of (5, 5, x) tuples is incorrect"
 assert len(manual_2_wins) == 4, "the number of (2, 2, x) tuples is incorrect"
 assert len(manual_1_wins) == 4, "the number of (1, 1, x) tuples is incorrect"
+
+assert len(wins) == len(centre_11_win) + len(all_equal_win) + len(manual_5_wins) + len(manual_2_wins) + len(manual_1_wins), "number of winning combos is incorrect"
 
 assert lower_payout * (len(lower_wins) / len(lower_wins + upper_wins)) + upper_payout * len(upper_wins) / len(lower_wins + upper_wins) == 30, "bonus roll expected payout isn't $30"
 
