@@ -11,6 +11,7 @@ editor: visual
   library(tidyverse)  #useful dataframe functions for R
   library(infer)      #statistical inference libraries
   library(reticulate) #allows Python and R interoperability
+  library(patchwork)  
 }
 ```
 
@@ -242,6 +243,8 @@ outcome |>
 
 ### Statistically verify the simulation's expected payout
 
+We begin by constructing a long-run play session with 1,000,000 pulls of the lever.
+
 ```{r}
 N_samples = 10^6
 
@@ -262,16 +265,52 @@ winning_spins <- longrun_spins |>
     )
   )
 
-longrun_spins <- bind_rows(winning_spins, losing_spins)
+longrun_spins <- bind_rows(winning_spins, losing_spins) |> 
+  ungroup()
 ```
 
-Create a T confidence interval
+These data are quite zero-inflated, but the number 30 isn't too terribly extreme, and t procedures are quite robust (especially with this sample size).
+
+```{r}
+p1 <- ggplot(longrun_spins, aes(payout)) +
+  geom_histogram(
+    binwidth = 1,
+    colour = "white",
+    fill = "skyblue") +
+  xlab("Payout per game") +
+  ylab("") +
+  theme_minimal()
+p2 <- openintro::normTail(M = c(qnorm(0.025), qnorm(0.975)), col = "skyblue")
+
+p1 + p2 + 
+  plot_layout(ncol = 2)
+```
+
+A 95% t-confidence interval for the payout per game is $0.957314 \pm 0.0086837$, which captures the theoretical expected payout of about $0.958$.
 
 ```{r}
 t_test(longrun_spins, response = payout)
 ```
 
+### Cross-reference the result
+
+Even though t procedures are robust to violations of assumptions, it's best to double check any results from them. We proceed by cross-referencing with a method that requires less assumptions than t-based procedures: the **non-parametric bootstrap**.
+
 ```{r}
-longrun_spins |> 
-  slice_head(n = 1)
+# subset_spins <- longrun_spins |> 
+#   slice_sample(n = 10000)
+# 
+# bootstrapped_means <- subset_spins |> 
+#   rep_sample_n(size = 10000, replace = TRUE, reps = 10000) |> 
+#   group_by(replicate) |> 
+#   summarise(average_payout = mean(payout))
+# 
+# bootstrapped_means  |> 
+#   ggplot(aes(average_payout)) +
+#   geom_histogram() 
+# 
+# bootstrapped_means |>
+#   pull(average_payout) |> 
+#   quantile(c(0.025, 0.975))
+# mean(bootstrapped_means$average_payout)
 ```
