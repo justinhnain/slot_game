@@ -1,5 +1,5 @@
 ---
-title: "Summoned Plunderer"
+title: "Altar of the God of Chaos"
 format: html
 editor: visual
 ---
@@ -38,9 +38,9 @@ combinations= list(itertools.product(x1, x2, x3))
 
 We define the set of all outcomes to be a combination of ordered triples to be $\Omega$, equal to the set of all $(x_1, x_2, x_3) \in \{x,y,z \in \mathbb{N}^3 : 1 \leq x \leq 10, 1 \leq y \leq 11, 1 \leq z \leq 5\}$\
 
-### Include a bonus round for when the second reel is "11"
+### Include a bonus round for when the second reel is "11" and the first reel is odd
 
-In other words, if $x_2 = 11$ then the payout becomes an outcome of the discrete random variable $X$ with the following payout table, for which $E[x] = 20$:
+In other words, if $x_2 = 11$ and $x_1 \equiv 1\text{ (mod 2)}$ then the payout becomes an outcome of the discrete random variable $X$ with the following payout table, for which $E[q(X)] = 20$:
 
 ```{python}
 #| code-fold: true
@@ -116,7 +116,7 @@ manual_1_wins = list(filter(lambda combo : leading_double(1, combo), combination
 
 ### Build the payout matrix
 
-In other words, we populate $f$, where $f$ is defined by `wins`.
+In other words, we populate $f$, where $f$ is defined by `wins`. Building `wins` as a dictionary makes `wins` easy to test, because discrete outcomes allow us to establish a bijection between `wins` and the intended payout function called $f$.
 
 ```{python}
 #| output: false
@@ -173,7 +173,7 @@ sample_space <- sample_space |>
   )
 ```
 
-Followed by constructing the dataframe `win_df` of winning combinations $$W \subset \Omega.$$
+Followed by constructing the dataframe `win_df` of winning combinations $W \subset \Omega$.
 
 ```{python}
 win_keys = list(wins.keys())
@@ -209,7 +209,7 @@ outcome <- outcome |>
   group_by(replicate) |> 
   summarise(payout = sum(payout) / 10)
         
-outcome <- outcome |> 
+outcome <- outcome |> #fills missing games with 0 payouts
   complete(replicate) |> 
   mutate(
     payout = if_else(is.na(payout), 0, payout)
