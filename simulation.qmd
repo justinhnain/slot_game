@@ -347,6 +347,8 @@ bootstrap_95_percentile_interval <- bootstrap_stats |>
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+text_height <- 1000
+
 bootstrap_stats |> 
   visualize(fill = "skyblue") +
   shade_confidence_interval(bootstrap_95_percentile_interval, linetype = "dashed", size = 0.5) +
@@ -363,12 +365,12 @@ bootstrap_stats |>
     geom = "text",
     label = str_glue("Mean of \n {obs_stat}"),
     x = obs_stat + 0.025,
-    y = 1000
+    y = text_height
   ) +
   geom_text(
     data = bootstrap_95_percentile_interval |> pivot_longer(cols = 1:2),
     aes(x = value, label = value),
-    y = 1000
+    y = text_height
   )
 ```
 
