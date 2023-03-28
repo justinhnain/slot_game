@@ -39,7 +39,7 @@ We define the set of all outcomes to be a combination of ordered triples to be$\
 
 ### Include a bonus round for when the second reel is "11"
 
-In other words, if $x_2 = 11$ then its corresponding payout table is:
+In other words, if $x_2 = 11$ leads to the payout being an outcome of the discrete random variable $X$ with the following payout table:
 
 ```{python}
 #| echo: false
@@ -52,7 +52,7 @@ table = [
          ]
 Markdown(tabulate(
   table, 
-  headers=["x", "1", "2", "3", "4", "5", "6"]
+  headers=["X", "1", "2", "3", "4", "5", "6"]
 ))
 
 ```
@@ -78,6 +78,19 @@ def bonus_roll():
 ```
 
 ### Define the payout matrix and winning combos
+
+We define the set of winning combinations $W \subset \Omega$ to be equal to $\{(x,y,z) \in \Omega: y = 11 \lor (x,y) \in \{(5,5), (1,1), (2,2)\}\lor x=y=z\}$ and the payout function $$f: W \rightarrow \mathbb{R}$$ such that
+
+$$
+f(w) = 
+\begin{cases}
+  1, & \text{if } w = (5,5,x_3) \\
+  1, & \text{if } w = (2,2,x_3) \\
+1, & \text{if } w = (1,1,x_3) \\
+3, & \text{if } w\text{'s coordinates are all equal}  \\
+X, & \text{if } w = (x_1, 11, x_3)
+\end{cases}
+$$
 
 ```{python}
 #| output: false
@@ -107,6 +120,8 @@ manual_1_wins = list(filter(lambda combo : leading_double(1, combo), combination
 
 ### Build the payout matrix
 
+In other words, we populate $f$, where $f$ is defined by "wins".
+
 ```{python}
 #| output: false
 
@@ -121,6 +136,8 @@ manual_1_wins = list(filter(lambda combo : leading_double(1, combo), combination
 ```
 
 ### Test, test, test!
+
+More rigorous testing ought to be done, but this captures some potential high level errors.
 
 ```{python}
 
@@ -148,3 +165,5 @@ expected_value = total_payout / num_combinations
 assert expected_value < 1, f"your payout of {expected_value} favours the player!"
 print(expected_value)
 ```
+
+# Simulate a 3-reel 1-line game
