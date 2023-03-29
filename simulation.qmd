@@ -87,7 +87,7 @@ f(w) =
   1, & \text{if } w = (2,2,x_3 \neq 2) \\
 1, & \text{if } w = (1,1,x_3 \neq 1) \\
 3, & \text{if } w\text{'s coordinates are all equal}  \\
-r \in q(X), & \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 2)}
+\gamma \in q(X), & \text{if } w = (x_1, 11, x_3)\text{ and }x_1 \equiv 1\text{ (mod 2)}
 \end{cases}
 $$
 
